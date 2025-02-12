@@ -32,7 +32,7 @@ class m250212_084612_order_dump extends Migration
     public function safeDown()
     {
         $this->truncateTable('{{%users}}');
-        $this->truncateTable('{{%orders}}');
+        $this->truncateTable('{{%list}}');
         $this->truncateTable('{{%services}}');
     }
 }

@@ -46,20 +46,34 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'orders/<status>' => 'orders/list/index',
+                'orders/' => 'orders/list/index',
             ],
+        ],
+    ],
+    'modules' => [
+        'orders' => [
+            'class' => 'app\modules\orders\Module',
         ],
     ],
     'params' => $params,
 ];
 
 if (YII_ENV_DEV) {
+    //todo исправить это
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
-    ];
+//    $config['bootstrap'][] = 'debug';
+//    $config['modules']['debug'] = [
+//        'class' => 'yii\debug\Module',
+//        // uncomment the following to add your IP if you are not connecting from localhost.
+////        'allowedIPs' => ['127.0.0.1', '::1'],
+////        'panels' => [
+////            'db' => [
+////                'class' => 'yii\debug\panels\DbPanel',
+////                'excludeActions' => ['orders/default/export-csv'], // Исключаем экшен export-csv
+////            ],
+////        ],
+//    ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [

@@ -12,7 +12,7 @@ class m250212_082518_order extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('{{%orders}}', [
+        $this->createTable('{{%list}}', [
             'id' => $this->primaryKey()->unsigned(),
             'user_id' => $this->integer()->notNull(),
             'link' => 'VARCHAR(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_estonian_ci NOT NULL',
@@ -23,7 +23,7 @@ class m250212_082518_order extends Migration
             'mode' => $this->tinyInteger(1)->notNull()->comment('0 - Manual, 1 - Auto'),
         ], 'CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci ROW_FORMAT=COMPACT ENGINE=InnoDB');
 
-        $this->execute("ALTER TABLE {{%orders}} AUTO_INCREMENT = 100001;");
+        $this->execute("ALTER TABLE {{%list}} AUTO_INCREMENT = 100001;");
 
         $this->createTable('{{%services}}', [
             'id' => $this->primaryKey()->unsigned(),
@@ -48,6 +48,6 @@ class m250212_082518_order extends Migration
     {
         $this->dropTable('{{%users}}');
         $this->dropTable('{{%services}}');
-        $this->dropTable('{{%orders}}');
+        $this->dropTable('{{%list}}');
     }
 }
