@@ -5,12 +5,12 @@ use yii\grid\GridView;
 
 $this->title = Yii::t('app', 'Orders');
 
-// Текущие параметры запроса
+
 $params = $params ?? [];
 
 echo Html::beginForm('', 'get', ['class' => 'mb-3']);
 
-// Фильтр по статусу
+
 echo Html::dropDownList(
     'status',
     $params['status'] ?? null,
@@ -25,7 +25,7 @@ echo Html::dropDownList(
     ['class' => 'form-control']
 );
 
-// Фильтр по mode
+
 echo Html::dropDownList(
     'mode',
     $params['mode'] ?? null,
@@ -33,7 +33,7 @@ echo Html::dropDownList(
     ['class' => 'form-control']
 );
 
-// Фильтр по сервисам
+
 $options = [];
 foreach ($services as $id => $count) {
     $options[$id] = $count > 0 ? "({$count})" : "({$count}) - disabled";
@@ -46,32 +46,34 @@ echo Html::dropDownList(
     ['class' => 'form-control', 'prompt' => Yii::t('app', 'Select Service')]
 );
 
-// Поиск по ID заказа
+
 echo Html::textInput(
     'search_id',
     $params['search_id'] ?? null,
     ['placeholder' => Yii::t('app', 'Search by ID'), 'class' => 'form-control']
 );
 
-// Поиск по имени пользователя
+
 echo Html::textInput(
     'search_user',
     $params['search_user'] ?? null,
     ['placeholder' => Yii::t('app', 'Search by User'), 'class' => 'form-control']
 );
 
-// Поиск по ссылке
+
 echo Html::textInput(
     'search_link',
     $params['search_link'] ?? null,
     ['placeholder' => Yii::t('app', 'Search by Link'), 'class' => 'form-control']
 );
 
-// Кнопка отправки формы
+
 echo Html::submitButton(Yii::t('app', 'Filter'), ['class' => 'btn btn-primary']);
 echo Html::endForm();
 
-// Виджет GridView
+
+
+
 echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
@@ -115,7 +117,32 @@ echo GridView::widget([
     ],
 ]);
 
-// Вывод информации о текущем положении и общем количестве записей
+
+
+$pagination = $dataProvider->getPagination();
+if ($pagination !== false && $totalCount > $pagination->pageSize) {
+    echo '<div class="pagination-info">';
+    echo Yii::t('app', 'Showing {start}-{end} of {total} records', [
+        'start' => $pagination->getOffset() + 1,
+        'end' => min($pagination->getOffset() + $pagination->getPageSize(), $totalCount),
+        'total' => $totalCount,
+    ]);
+    echo '</div>';
+
+    echo LinkPager::widget([
+        'pagination' => $pagination,
+        'options' => ['class' => 'pagination'],
+    ]);
+} else {
+    echo '<div class="pagination-info">';
+    echo Yii::t('app', 'Total records: {total}', ['total' => $totalCount]);
+    echo '</div>';
+}
+
+
+
+
+
 $pagination = $dataProvider->getPagination();
 if ($pagination !== false && $totalCount > $pagination->pageSize) {
     echo '<div class="pagination-info">';
@@ -138,29 +165,8 @@ if ($pagination !== false && $totalCount > $pagination->pageSize) {
 }
 
 
-// Вывод информации о текущем положении и общем количестве записей
-$pagination = $dataProvider->getPagination();
-if ($pagination !== false && $totalCount > $pagination->pageSize) {
-    echo '<div class="pagination-info">';
-    echo Yii::t('app', 'Showing {start}-{end} of {total} records', [
-        'start' => $pagination->getOffset() + 1,
-        'end' => min($pagination->getOffset() + $pagination->getPageSize(), $totalCount),
-        'total' => $totalCount,
-    ]);
-    echo '</div>';
 
-    // Вывод постраничной навигации
-    echo LinkPager::widget([
-        'pagination' => $pagination,
-        'options' => ['class' => 'pagination'],
-    ]);
-} else {
-    echo '<div class="pagination-info">';
-    echo Yii::t('app', 'Total records: {total}', ['total' => $totalCount]);
-    echo '</div>';
-}
 
-// Ссылка для скачивания CSV
 echo Html::a(Yii::t('app', 'Save result'), ['export-csv'] + $params, [
     'class' => 'btn btn-secondary float-right mt-3',
 ]);

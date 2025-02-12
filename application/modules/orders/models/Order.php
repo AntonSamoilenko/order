@@ -36,7 +36,6 @@ class Order extends ActiveRecord
         ];
     }
 
-    // Отношение с таблицей users
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
