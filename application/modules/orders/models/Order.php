@@ -41,7 +41,6 @@ class Order extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
-    // Отношение с таблицей services
     public function getService(): ActiveQuery
     {
         return $this->hasOne(Service::class, ['id' => 'service_id']);

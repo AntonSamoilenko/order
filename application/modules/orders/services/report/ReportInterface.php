@@ -4,7 +4,5 @@ namespace app\modules\orders\services\report;
 
 interface ReportInterface
 {
-    public function createReport(): string;
-
-    public function removeTemporaryFile(string $filename): void;
+    public function buildReport(array $params): void;
 }

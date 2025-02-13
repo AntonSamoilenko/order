@@ -46,8 +46,9 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'orders/<status>' => 'orders/list/index',
                 'orders/' => 'orders/list/index',
+                'orders' => 'orders/list/index',
+                'orders/<status:[\w\-]+>' => 'orders/list/index',
             ],
         ],
     ],

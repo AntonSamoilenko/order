@@ -1,44 +1,44 @@
 <?php
 
-namespace app\modules\orders\services\report;
+namespace app\modules\orders\services\report\csvReport;
 
+use app\modules\orders\helpers\OrderHelper;
 use app\modules\orders\models\Order;
+use app\modules\orders\services\report\ReportWriterInterface;
 use Yii;
-use yii\db\QueryInterface;
+use yii\base\InvalidConfigException;
+use yii\db\ActiveQuery;
 
-class CSVReport implements ReportInterface
+class ReportWriter implements ReportWriterInterface
 {
-    private QueryInterface $query;
-    public function __construct($query)
+    private ActiveQuery $query;
+
+    public function setQuery(ActiveQuery $query): self
     {
         $this->query = $query;
+
+        return $this;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function createReport(): string
     {
+        if (empty($this->query)) {
+            return '';
+        }
+
         $filename = tempnam(sys_get_temp_dir(), 'csv');
         $output = fopen($filename, 'w');
         fwrite($output, "\xEF\xBB\xBF");
-        fputcsv($output, [
-            'ID',
-            'User',
-            'Link',
-            'Quantity',
-            'Service',
-            'Status',
-            'Created At',
-            'Mode',
-        ]);
+
+        //todo надо закинуть в переводчик
+        fputcsv($output, ['ID', 'User', 'Link', 'Quantity', 'Service', 'Status', 'Created At', 'Mode',]);
 
         foreach ($this->query->each() as $order) {
             /** @var Order $order */
-            $statusLabels = [
-                0 => Yii::t('app', 'Pending'),
-                1 => Yii::t('app', 'In Progress'),
-                2 => Yii::t('app', 'Completed'),
-                3 => Yii::t('app', 'Canceled'),
-                4 => Yii::t('app', 'Fail'),
-            ];
+            $statusLabels = OrderHelper::statusLabels();
 
             $modeLabel = $order->mode === 0 ? Yii::t('app', 'Manual') : Yii::t('app', 'Auto');
 
