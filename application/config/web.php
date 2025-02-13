@@ -12,6 +12,18 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+        'assetManager' => [
+            'basePath' => '@webroot/assets', // Физический путь к каталогу assets
+            'baseUrl' => '@web/assets',      // URL-путь к каталогу assets
+            'forceCopy' => YII_ENV_DEV,      // Копировать файлы при разработке
+            'bundles' => [
+                // Отключаем все стандартные ассеты Yii2
+                'yii\web\YiiAsset' => false,
+                'yii\bootstrap4\BootstrapAsset' => false,
+                'yii\bootstrap4\BootstrapPluginAsset' => false,
+                'yii\widgets\ActiveFormAsset' => false, // Если используете ActiveForm
+            ],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '9aFM5eQImHNng3RErw8x0VIYnCErxaRX',
@@ -46,9 +58,17 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'orders/<status:\d+>' => 'orders/list/index',
                 'orders/' => 'orders/list/index',
                 'orders' => 'orders/list/index',
                 'orders/<status:[\w\-]+>' => 'orders/list/index',
+            ],
+        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@app/modules/orders/views', // Приоритет для модуля
+                ],
             ],
         ],
     ],

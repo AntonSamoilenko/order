@@ -3,9 +3,11 @@
 namespace app\modules\orders\controllers;
 
 use app\modules\orders\helpers\OrderHelper;
+use app\modules\orders\models\Order;
 use app\modules\orders\repositories\OrderRepository;
 use app\modules\orders\services\report\ReportInterface;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\helpers\Url;
 
@@ -21,24 +23,49 @@ class ListController extends Controller
 
     public function actionIndex(OrderRepository $orderRepository, ?string $status = null): string
     {
-        $params = Yii::$app->request->queryParams;
+//        $this->layout = '@app/modules/orders/views/layouts/main';
+        // Инициализация параметров поиска и фильтрации
+        $query = Order::find()->joinWith(['user', 'service']);
 
-        if ($status && isset(self::STATUS_MAP[$status])) {
-            $params['status'] = self::STATUS_MAP[$status];
+        // Фильтр по статусу (если указан)
+        if ($status !== null) {
+            $query->andWhere(['orders.status' => $status]);
         }
 
-        $urls = [];
-        foreach (self::STATUS_MAP as $textStatus => $id) {
-            $urls[$textStatus] = Url::to(['/orders/' . $textStatus]);
+        // Обработка других фильтров (mode和服务_id)
+        $mode = Yii::$app->request->get('mode', []);
+        $serviceId = Yii::$app->request->get('service_id', []);
+
+        if (!empty($mode)) {
+            $query->andWhere(['orders.mode' => $mode]);
         }
+
+        if (!empty($serviceId)) {
+            $query->andWhere(['orders.service_id' => $serviceId]);
+        }
+
+        // Поиск по нескольким полям
+        $search = Yii::$app->request->get('search', '');
+        if (!empty($search)) {
+            $query->andFilterWhere([
+                'or',
+                ['like', 'orders.id', $search],
+                ['like', 'CONCAT(users.first_name, " ", users.last_name)', $search],
+                ['like', 'orders.link', $search],
+            ]);
+        }
+
+        // Настройка пагинации
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 100,
+            ],
+        ]);
 
         return $this->render('index', [
-            'dataProvider' => $orderRepository->getData($params),
-            'params' => $params,
-            'totalCount' => $orderRepository->getTotalCount(),
-            'services' => $orderRepository->getService(),
-            'availableModes' => $orderRepository->getAvailableModes(),
-            'urls' => $urls,
+            'dataProvider' => $dataProvider,
+            'status' => $status,
         ]);
     }
 

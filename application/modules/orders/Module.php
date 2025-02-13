@@ -12,6 +12,8 @@ use app\modules\orders\services\report\ReportSenderInterface;
 
 class Module extends \yii\base\Module
 {
+    public $controllerNamespace = 'app\modules\orders\controllers';
+
     public function init()
     {
         parent::init();
@@ -30,5 +32,8 @@ class Module extends \yii\base\Module
                 'class' => OrderRepository::class
             ]
         ]);
+
+        $this->setLayoutPath('@app/modules/orders/views/layouts');
+        $this->setViewPath('@app/modules/orders/views');
     }
 }
