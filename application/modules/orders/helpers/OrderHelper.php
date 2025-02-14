@@ -15,6 +15,14 @@ class OrderHelper
             3 => Yii::t('app', 'Canceled'),
             4 => Yii::t('app', 'Fail'),
         ];
+    }
 
+    public static function searchFields(): array
+    {
+        return [
+            0 => Yii::t('app', 'Order ID'),
+            1 => Yii::t('app', 'Link'),
+            2 => Yii::t('app', 'Username'),
+        ];
     }
 }

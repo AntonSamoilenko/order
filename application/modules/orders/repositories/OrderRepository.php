@@ -4,18 +4,14 @@ namespace app\modules\orders\repositories;
 
 use app\modules\orders\models\Order;
 use app\modules\orders\models\Service;
+use app\modules\orders\models\User;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 
 class OrderRepository
 {
-    public function getOrdersByParams(array $params): ActiveQuery
+    public function setFilterByParams(ActiveQuery &$query, array $params): void
     {
-        $query = Order::find()
-            ->alias('o')
-            ->with(['user', 'service'])
-            ->orderBy(['o.id' => SORT_DESC]);
-
         if (isset($params['status'])) {
             $query->andWhere(['o.status' => $params['status']]);
         }
@@ -24,26 +20,47 @@ class OrderRepository
             $query->andWhere(['o.mode' => $params['mode']]);
         }
 
-        if (isset($params['service_id'])) {
-            $query->andWhere(['o.service_id' => $params['service_id']]);
+        if (!empty($params['service_id'])) {
+            $serviceIds = array_map('intval', $params['service_id']);
+            $query->andWhere(['in', 'o.service_id', $serviceIds]);
         }
 
-        if (!empty($params['search_id'])) {
-            $query->andWhere(['o.id' => $params['search_id']]);
+        if (isset($params['search_type'])) {
+            switch ((int) $params['search_type']) {
+                case 0:
+                    $orderIds = array_map('intval', explode(',', $params['search']));
+                    $query->andWhere(['in', 'o.id', $orderIds]);
+                    break;
+                case 1:
+                    $query->andWhere(['like', 'o.link', $params['search']]);
+                    break;
+                case 2:
+                    $userName = explode(' ', $params['search']);
+                    $query->leftJoin(User::tableName() . ' u', 'o.user_id = u.id')
+                        ->andWhere([
+                            'or',
+                            ['like', 'u.first_name', $userName[0]],
+                            ['like', 'u.last_name', $userName[0]]
+                        ]);
+                    if (!empty($userName[1])) {
+                        $query->andWhere([
+                            'or',
+                            ['like', 'u.first_name', $userName[1]],
+                            ['like', 'u.last_name', $userName[1]]
+                        ]);
+                    }
+                    break;
+            }
         }
+    }
 
-        if (!empty($params['search_user'])) {
-            $query->joinWith(['user u'])
-                ->andWhere([
-                    'or',
-                    ['like', 'u.first_name', $params['search_user']],
-                    ['like', 'u.last_name', $params['search_user']]
-                ]);
-        }
+    public function getOrdersByParams(array $params): ActiveQuery
+    {
+        $query = Order::find()
+            ->alias('o')
+            ->orderBy(['o.id' => SORT_DESC]);
 
-        if (!empty($params['search_link'])) {
-            $query->andWhere(['like', 'o.link', $params['search_link']]);
-        }
+        $this->setFilterByParams($query, $params);
 
         return $query;
     }
@@ -58,7 +75,6 @@ class OrderRepository
         ]);
     }
 
-
     public function getTotalCount(): int
     {
         return Order::find()->count();
@@ -72,21 +88,23 @@ class OrderRepository
             ->column();
     }
 
-    public function getService(): array
+    public function getService(array $params = []): array
     {
-        $serviceCounts = Order::find()
+        $query = Order::find()
             ->select(['service_id', 's.name as name', 'COUNT(o.id) as count'])
-            ->alias('o')
-            ->leftJoin(Service::tableName() . ' s', 'o.service_id = s.id')
-            ->groupBy('o.service_id')
-            ->orderBy(['count' => SORT_DESC])
-            ->asArray()
-            ->all();
+            ->alias('o');
 
-        $services = [];
-        foreach ($serviceCounts as $item) {
-            $services[$item['service_id']] = $item;
+        unset($params['service_id']);
+        $this->setFilterByParams($query, $params);
+
+        $query->leftJoin(Service::tableName() . ' s', 'o.service_id = s.id')
+            ->groupBy('o.service_id')
+            ->orderBy(['count' => SORT_DESC]);
+
+        $preparedServices = [];
+        foreach ($query->asArray()->all() as $item) {
+            $preparedServices[$item['service_id']] = $item;
         }
-        return $services;
+        return $preparedServices;
     }
 }

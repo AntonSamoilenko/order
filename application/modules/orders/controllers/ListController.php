@@ -7,98 +7,65 @@ use app\modules\orders\models\Order;
 use app\modules\orders\repositories\OrderRepository;
 use app\modules\orders\services\report\ReportInterface;
 use Yii;
+use yii\base\ExitException;
+use yii\base\InvalidConfigException;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\helpers\Url;
 
 class ListController extends Controller
 {
-    private const STATUS_MAP = [
+    private const STATUS_MAP_REVERSED = [
         'pending' => 0,
         'in_progress' => 1,
         'completed' => 2,
         'canceled' => 3,
-        'fail' => 4,
+        'error' => 4,
     ];
 
     public function actionIndex(OrderRepository $orderRepository, ?string $status = null): string
     {
-//        $this->layout = '@app/modules/orders/views/layouts/main';
-        // Инициализация параметров поиска и фильтрации
-        $query = Order::find()->joinWith(['user', 'service']);
-
-        // Фильтр по статусу (если указан)
-        if ($status !== null) {
-            $query->andWhere(['orders.status' => $status]);
-        }
-
-        // Обработка других фильтров (mode和服务_id)
+        $statusId = self::STATUS_MAP_REVERSED[$status] ?? null;
         $mode = Yii::$app->request->get('mode', []);
         $serviceId = Yii::$app->request->get('service_id', []);
-
-        if (!empty($mode)) {
-            $query->andWhere(['orders.mode' => $mode]);
-        }
-
-        if (!empty($serviceId)) {
-            $query->andWhere(['orders.service_id' => $serviceId]);
-        }
-
-        // Поиск по нескольким полям
         $search = Yii::$app->request->get('search', '');
-        if (!empty($search)) {
-            $query->andFilterWhere([
-                'or',
-                ['like', 'orders.id', $search],
-                ['like', 'CONCAT(users.first_name, " ", users.last_name)', $search],
-                ['like', 'orders.link', $search],
-            ]);
-        }
+        $searchType = Yii::$app->request->get('search_type', '');
 
-        // Настройка пагинации
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 100,
-            ],
-        ]);
+
+        $params = Yii::$app->request->queryParams;
+        $params['status'] = $statusId;
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
-            'status' => $status,
+            'dataProvider'  => $orderRepository->getData($params),
+            'services'      => $orderRepository->getService($params),
+            'searchFields'  => OrderHelper::searchFields(),
+            'status'        => $status,
         ]);
     }
 
+    /**
+     * @throws ExitException
+     * @throws InvalidConfigException
+     */
     public function actionExportCsv(ReportInterface $report, OrderRepository $orderRepository): void
     {
-        ob_start();
-        // Устанавливаем заголовки для скачивания CSV
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="export.csv"');
 
-        // Отключаем буферизацию вывода
         $params = Yii::$app->request->queryParams;
         while (ob_get_level() > 0) {
             ob_end_flush();
         }
 
-        // Создаем поток вывода для CSV
         $output = fopen('php://output', 'w');
+        fputcsv($output, ['ID', 'User', 'Link', 'Quantity', 'Service', 'Status', 'Created At', 'Mode',]);
 
-        // Записываем заголовки CSV
-        fputcsv($output, ['ID', 'User', 'Link', 'Quantity', 'Service', 'Status', 'Created At', 'Mode',]); // Замените на реальные названия столбцов
+        $query = $orderRepository->getOrdersByParams($params);
+        $batchSize = 100;
+        $models = $query->batch($batchSize);
 
-        // Выполняем запрос к базе данных
-        $query = $orderRepository->getOrdersByParams($params); // Замените на ваш запрос
-        $batchSize = 100; // Размер партии
-        $models = $query->batch($batchSize); // Получаем генератор партий
-
-        // Инициализация переменной для цикла
         $data = [];
-
-        // Цикл do-while для обработки данных
         do {
-            // Получаем следующую партию данных
             $data = $models->current();
 
             $statusLabels = OrderHelper::statusLabels();
@@ -107,7 +74,7 @@ class ListController extends Controller
             if ($data) {
                 foreach ($data as $order) {
                     $modeLabel = $order->mode === 0 ? Yii::t('app', 'Manual') : Yii::t('app', 'Auto');
-                    // Записываем данные в CSV
+
                     fputcsv($output, [
                         $order->id,
                         $order->user ? $order->user->getFullName() : '',
@@ -120,18 +87,14 @@ class ListController extends Controller
                     ]);
                 }
 
-                // Переходим к следующей партии
                 $models->next();
 
-                // Принудительно отправляем данные в браузер
                 flush();
             }
         } while ($data !== false);
 
-        // Закрываем поток вывода
         fclose($output);
 
-        // Завершаем выполнение скрипта
         Yii::$app->end();
 
 

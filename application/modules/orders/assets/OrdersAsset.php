@@ -3,12 +3,10 @@
 namespace app\modules\orders\assets;
 
 use yii\web\AssetBundle;
+use yii\web\View;
 
 class OrdersAsset extends AssetBundle
 {
-//    public $sourcePath = '@web'; // Путь к корневому каталогу web/
-//    public $sourcePath = '@app/modules/orders/assets';
-
     public $sourcePath = '@app/modules/orders/assets';
     public $basePath = '@webroot';
     public $baseUrl = '@web';
@@ -20,12 +18,17 @@ class OrdersAsset extends AssetBundle
     ];
 
     public $js = [
+        'js/jquery.min.js',
         'js/bootstrap.min.js',
+    ];
+
+    public $jsOptions = [
+        'position' => View::POS_HEAD
     ];
 
     public $depends = [];
 
     public $publishOptions = [
-        'forceCopy' => YII_ENV_DEV, // Копировать файлы при разработке
+        'forceCopy' => YII_ENV_DEV,
     ];
 }

@@ -1,7 +1,7 @@
 composer:
 	docker compose exec php composer install
 
-migrate-db:
+migrate_db:
 	docker compose exec php php ./yii migrate
 
 cache:
@@ -12,3 +12,4 @@ cache:
 #	docker compose exec php php yii migrate/create order
 #	docker compose exec php php ./yii migrate/to m250212_084612_order_dump
 #	docker compose exec php php ./yii migrate/down m250212_082518_order
+#	docker compose exec php composer dump-autoload --optimize

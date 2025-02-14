@@ -1,43 +1,27 @@
 <?php
 
 use app\modules\orders\assets\OrdersAsset;
-use yii\helpers\Html;
 
-// Регистрация ассетов модуля
+/* @var $this yii\web\View */
+/* @var $content string */
+
 OrdersAsset::register($this);
 
-$this->title = 'Мой модуль Orders';
+$this->registerCsrfMetaTags();
+$this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
+$this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
+$this->registerMetaTag(['name' => 'description', 'content' => $this->params['meta_description'] ?? '']);
+$this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_keywords'] ?? '']);
+$this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii::getAlias('@web/favicon.ico')]);
+
+$this->beginPage()
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?= Yii::$app->language ?>" class="h-100">
 <head>
-    <?php $this->head() ?>
-    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title></title>
-<!--    <link href="css/bootstrap.min.css" rel="stylesheet">-->
-<!--    <link href="css/custom.css" rel="stylesheet">-->
-
-    <style>
-        .label-default{
-            border: 1px solid #ddd;
-            background: none;
-            color: #333;
-            min-width: 30px;
-            display: inline-block;
-        }
-    </style>
-
-    <?php
-//    var_dump($this->registerCssFile('@web/modules/orders/assets/css/custom.css', ['depends' => []]));die;
-        $this->registerCssFile('@web/modules/orders/assets/css/custom.css', ['depends' => []]);
-        $this->registerCssFile('@web/modules/orders/assets/css/bootstrap.min.css', ['depends' => []]);
-        $this->registerJsFile('@web/modules/orders/assets/js/bootstrap.min.js', ['depends' => []]);
-    ?>
-
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <?php $this->head() ?>
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -47,3 +31,4 @@ $this->title = 'Мой модуль Orders';
 <?php $this->endBody() ?>
 </body>
 </html>
+<?php $this->endPage() ?>
