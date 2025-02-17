@@ -56,9 +56,7 @@ class OrderController extends Controller
      */
     public function actionExportCsv(ReportInterface $report): void
     {
-        $params = Yii::$app->request->queryParams;
-
-        $report->buildReport($params);
+        $report->buildReport();
     }
 }
 

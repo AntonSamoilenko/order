@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-navbar-collapse">
-                <span class="sr-only"><?= Yii::t('app', 'Toggle navigation') ?></span>
+                <span class="sr-only"><?= Yii::t('orders', 'toggle_navigation') ?></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -10,7 +10,7 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><?= Yii::t('app', 'Orders') ?></a></li>
+                <li class="active"><a href="#"><?= Yii::t('orders', 'orders') ?></a></li>
             </ul>
         </div>
     </div>

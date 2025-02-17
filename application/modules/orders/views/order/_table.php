@@ -14,21 +14,21 @@ use yii\helpers\Url;
 <table class="table order-table">
     <thead>
         <tr>
-            <th><?= Yii::t('app', 'ID') ?></th>
-            <th><?= Yii::t('app', 'User') ?></th>
-            <th><?= Yii::t('app', 'Link') ?></th>
-            <th><?= Yii::t('app', 'Quantity') ?></th>
+            <th><?= Yii::t('orders', 'fields.id') ?></th>
+            <th><?= Yii::t('orders', 'fields.user') ?></th>
+            <th><?= Yii::t('orders', 'fields.link') ?></th>
+            <th><?= Yii::t('orders', 'fields.quantity') ?></th>
             <th class="dropdown-th">
                 <div class="dropdown">
                     <button class="btn btn-th btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <?= Yii::t('app', 'Service'); ?>
+                        <?= Yii::t('orders', 'fields.service'); ?>
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
                         <li class="<?= empty($currentParams['service_ids']) ? 'active' : '' ?>">
                             <?= Html::a(
-                                    Yii::t('app', 'All') . " {$dataProvider->getTotalCount()}",
+                                    Yii::t('orders', 'all') . " {$dataProvider->getTotalCount()}",
                                     Url::current(['service_ids' => null])
                             ); ?>
                         </li>
@@ -46,21 +46,21 @@ use yii\helpers\Url;
                     </ul>
                 </div>
             </th>
-            <th><?= Yii::t('app', 'Status') ?></th>
+            <th><?= Yii::t('orders', 'fields.status') ?></th>
             <th class="dropdown-th">
                 <div class="dropdown">
                     <button class="btn btn-th btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                        <?= Yii::t('app', 'Mode') ?>
+                        <?= Yii::t('orders', 'fields.mode') ?>
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
                         <li class="<?= !isset($currentParams['mode']) ? 'active' : '' ?>">
-                            <?= Html::a(Yii::t('app', 'All'), Url::current(['mode' => null])); ?>
+                            <?= Html::a(Yii::t('orders', 'all'), Url::current(['mode' => null])); ?>
                         </li>
                         <?php foreach ($modes as $mode): ?>
                             <li class="<?= (isset($currentParams['mode']) && $currentParams['mode'] == $mode)? 'active' : '' ?>">
                                 <?= Html::a(
-                                    Yii::t('app', $mode ? 'Auto' : 'Manual'),
+                                    Yii::t('orders', $mode ? 'mode.auto' : 'mode.manual'),
                                     Url::current(['mode' => $mode]));
                                 ?>
                             </li>
@@ -69,7 +69,7 @@ use yii\helpers\Url;
                 </div>
 
             </th>
-            <th><?= Yii::t('app', 'Created') ?></th>
+            <th><?= Yii::t('orders', 'fields.created') ?></th>
         </tr>
     </thead>
     <tbody>

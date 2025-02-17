@@ -29,7 +29,7 @@ services:
       DB_NAME: '${DB_NAME:-order_test}'
       DB_USER: '${DB_USER:-root}'
       DB_PASSWORD: '${DB_PASSWORD:-psh_psh_ololo_ya_voditel_nlo}'
-      LANGUAGE: '${APP_LANGUAGE:-en-US}'
+      LANGUAGE: '${APP_LANGUAGE:-en}'
     depends_on:
       - db
     networks:

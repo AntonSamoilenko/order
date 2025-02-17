@@ -14,7 +14,16 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'language' => 'en',
     'components' => [
+        'i18n' => [
+            'translations' => [
+                'orders' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                ],
+            ],
+        ],
         'assetManager' => [],
         'request' => [
             'cookieValidationKey' => '9aFM5eQImHNng3RErw8x0VIYnCErxaRX',
@@ -59,12 +68,12 @@ $config = [
     'params' => $params,
 ];
 
-//if (YII_ENV_DEV) {
+if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         'allowedIPs' => ['*'],
     ];
-//}
+}
 
 return $config;

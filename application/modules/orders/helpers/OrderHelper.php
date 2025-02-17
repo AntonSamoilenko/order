@@ -31,14 +31,14 @@ class OrderHelper
     public static function getCSVFields(): array
     {
         return[
-            Yii::t('app', 'ID'),
-            Yii::t('app', 'User'),
-            Yii::t('app', 'Link'),
-            Yii::t('app', 'Quantity'),
-            Yii::t('app', 'Service'),
-            Yii::t('app', 'Status'),
-            Yii::t('app', 'Created At'),
-            Yii::t('app', 'Mode'),
+            Yii::t('orders', 'fields.id'),
+            Yii::t('orders', 'fields.user'),
+            Yii::t('orders', 'fields.link'),
+            Yii::t('orders', 'fields.quantity'),
+            Yii::t('orders', 'fields.service'),
+            Yii::t('orders', 'fields.status'),
+            Yii::t('orders', 'fields.created_at'),
+            Yii::t('orders', 'fields.mode'),
         ];
     }
 
@@ -48,11 +48,11 @@ class OrderHelper
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_PENDING_ID => Yii::t('app', 'Pending'),
-            self::STATUS_IN_PROGRESS_ID => Yii::t('app', 'In Progress'),
-            self::STATUS_COMPLETED_ID => Yii::t('app', 'Completed'),
-            self::STATUS_CANCELED_ID => Yii::t('app', 'Canceled'),
-            self::STATUS_ERROR_ID => Yii::t('app', 'Error'),
+            self::STATUS_PENDING_ID => Yii::t('orders', 'labels_status.pending'),
+            self::STATUS_IN_PROGRESS_ID => Yii::t('orders', 'labels_status.in_progress'),
+            self::STATUS_COMPLETED_ID => Yii::t('orders', 'labels_status.completed'),
+            self::STATUS_CANCELED_ID => Yii::t('orders', 'labels_status.canceled'),
+            self::STATUS_ERROR_ID => Yii::t('orders', 'labels_status.error'),
         ];
     }
 
@@ -90,9 +90,9 @@ class OrderHelper
     public static function searchFields(): array
     {
         return [
-            self::SEARCH_FIELD_ID => Yii::t('app', 'Order ID'),
-            self::SEARCH_FIELD_LINK => Yii::t('app', 'Link'),
-            self::SEARCH_FIELD_USERNAME => Yii::t('app', 'Username'),
+            self::SEARCH_FIELD_ID => Yii::t('orders', 'search_field.order_id'),
+            self::SEARCH_FIELD_LINK => Yii::t('orders', 'search_field.link'),
+            self::SEARCH_FIELD_USERNAME => Yii::t('orders', 'search_field.username'),
         ];
     }
 

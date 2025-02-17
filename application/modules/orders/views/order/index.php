@@ -1,7 +1,5 @@
 <?php
 
-use app\modules\orders\DTO\Orders;
-use yii\data\Pagination;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
@@ -43,10 +41,8 @@ use yii\widgets\LinkPager;
 
     <div>
         <?= Html::a(
-                Yii::t('app', 'Save file'),
+                Yii::t('orders', 'save_file'),
                 Url::to(array_merge(['/orders/export_csv'], $currentParams))
         ); ?>
     </div>
-
-
 </div>

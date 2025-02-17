@@ -13,7 +13,7 @@ class Report implements ReportInterface
     /**
      * @var ReportSender|ReportSenderInterface
      */
-    private ReportSender $reportSender;
+    private ReportSender|ReportSenderInterface $reportSender;
 
     /**
      * @var OrderRepository
@@ -33,18 +33,20 @@ class Report implements ReportInterface
     }
 
     /**
-     * @param array $params
      * @return void
      */
-    public function buildReport(array $params): void
+    public function buildReport(): void
     {
         ob_start();
 
         try {
             $params = Yii::$app->request->queryParams;
             $params['status'] = isset($params['status'])
-                ? OrderHelper::statusReversed()[$params['status']]
-                : null;
+                ? (is_numeric($params['status'])
+                    ? OrderHelper::statuses()[(int) $params['status']]
+                    : OrderHelper::statusLabels()[$params['status']]
+                ) : null;
+
             set_time_limit(300);
 
             $query = $this->orderRepository->getOrdersByParams($params);
