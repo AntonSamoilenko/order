@@ -1,5 +1,7 @@
 <?php
 
+use app\modules\orders\DTO\Orders;
+use yii\data\Pagination;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
@@ -11,6 +13,7 @@ use yii\widgets\LinkPager;
 /* @var $statuses app\modules\orders\helpers\OrderHelper::statuses() */
 /* @var $statusLabels app\modules\orders\helpers\OrderHelper::statusLabels() */
 /* @var $modes app\modules\orders\helpers\OrderHelper::modes() */
+/* @var $currentParams array */
 ?>
 
 <?php echo $this->render('_navigation'); ?>
@@ -24,10 +27,11 @@ use yii\widgets\LinkPager;
     ?>
 
     <?php echo $this->render('_table', [
-        'dataProvider'  => $dataProvider,
-        'services'      => $services,
-        'statuses'      => $statuses,
-        'modes'         => $modes,
+        'dataProvider' => $dataProvider,
+        'services' => $services,
+        'statuses' => $statuses,
+        'modes' => $modes,
+        'currentParams' => $currentParams,
         ]);
     ?>
 
@@ -38,7 +42,7 @@ use yii\widgets\LinkPager;
     <div>
         <?= Html::a(
                 Yii::t('app', 'Save file'),
-                Url::to(array_merge(['/orders/export_csv'], Yii::$app->request->getQueryParams()))
+                Url::to(array_merge(['/orders/export_csv'], $currentParams))
         ); ?>
     </div>
 

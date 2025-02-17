@@ -1,11 +1,13 @@
 <?php
 
+use app\modules\orders\DTO\Orders;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $statuses app\modules\orders\helpers\OrderHelper::statusLabels() */
 /* @var $services array */
+/* @var $currentParams array */
 /* @var $modes app\modules\orders\helpers\OrderHelper::modes() */
 ?>
 
@@ -24,7 +26,7 @@ use yii\helpers\Url;
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 
-                        <li class="<?= empty(Yii::$app->request->getQueryParams()['service_ids']) ? 'active' : '' ?>">
+                        <li class="<?= empty($currentParams['service_ids']) ? 'active' : '' ?>">
                             <?= Html::a(
                                     Yii::t('app', 'All') . " {$dataProvider->getTotalCount()}",
                                     Url::current(['service_ids' => null])
@@ -52,11 +54,11 @@ use yii\helpers\Url;
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <li class="<?= !isset(Yii::$app->request->getQueryParams()['mode']) ? 'active' : '' ?>">
+                        <li class="<?= !isset($currentParams['mode']) ? 'active' : '' ?>">
                             <?= Html::a(Yii::t('app', 'All'), Url::current(['mode' => null])); ?>
                         </li>
                         <?php foreach ($modes as $mode): ?>
-                            <li class="<?= (isset(Yii::$app->request->getQueryParams()['mode']) && Yii::$app->request->getQueryParams()['mode'] == $mode)? 'active' : '' ?>">
+                            <li class="<?= (isset($currentParams['mode']) && $currentParams['mode'] == $mode)? 'active' : '' ?>">
                                 <?= Html::a(
                                     Yii::t('app', $mode ? 'Auto' : 'Manual'),
                                     Url::current(['mode' => $mode]));
@@ -71,19 +73,19 @@ use yii\helpers\Url;
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($dataProvider->getModels() as $model): ?>
+        <?php foreach ($dataProvider->getModels() as $order): ?>
             <tr>
-                <td><?= Html::encode($model->id) ?></td>
-                <td><?= Html::encode($model->user->first_name . ' ' . $model->user->last_name) ?></td>
-                <td><?= Html::encode($model->link) ?></td>
-                <td><?= Html::encode($model->quantity) ?></td>
+                <td><?= Html::encode($order->id) ?></td>
+                <td><?= Html::encode($order->username) ?></td>
+                <td><?= Html::encode($order->link) ?></td>
+                <td><?= Html::encode($order->quantity) ?></td>
                 <td>
-                    <span class="label-id"><?= $services[$model->service_id]['count'] ?></span>
-                    <?= Html::encode($model->service->name) ?>
+                    <span class="label-id"><?= $order->serviceCount?></span>
+                    <?= Html::encode($order->serviceName) ?>
                 </td>
-                <td><?= Html::encode($statuses[$model->status] ?? 'Unknown'); ?></td>
-                <td><?= $model->mode ? 'Auto' : 'Manual'?></td>
-                <td><?= date('Y-m-d H:i:s', $model->created_at) ?></td>
+                <td><?= Html::encode($order->status); ?></td>
+                <td><?= $order->mode ?></td>
+                <td><?= $order->createdAt ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

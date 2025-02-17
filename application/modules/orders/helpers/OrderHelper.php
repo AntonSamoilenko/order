@@ -6,6 +6,11 @@ use Yii;
 
 class OrderHelper
 {
+    public const MODE_MANUAL = 'manual';
+    public const MODE_AUTO = 'auto';
+
+    private const MODE_AUTO_ID = 0;
+    private const MODE_MANUAL_ID = 1;
     private const STATUS_PENDING_ID = 0;
     private const STATUS_PENDING = 'pending';
     private const STATUS_IN_PROGRESS_ID = 1;
@@ -16,15 +21,9 @@ class OrderHelper
     private const STATUS_CANCELED = 'canceled';
     private const STATUS_ERROR_ID = 4;
     private const STATUS_ERROR = 'error';
-
     private const SEARCH_FIELD_ID = 0;
     private const SEARCH_FIELD_LINK = 1;
     private const SEARCH_FIELD_USERNAME = 2;
-
-    private const MODE_AUTO_ID = 0;
-    private const MODE_AUTO = 'auto';
-    private const MODE_MANUAL_ID = 1;
-    private const MODE_MANUAL = 'manual';
 
     /**
      * @return array

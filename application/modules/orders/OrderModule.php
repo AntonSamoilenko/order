@@ -3,6 +3,7 @@
 namespace app\modules\orders;
 
 use app\modules\orders\repositories\OrderRepository;
+use app\modules\orders\services\dataHandler\OrderHandler;
 use app\modules\orders\services\prepareLinks\PrepareLinksInterface;
 use app\modules\orders\services\prepareLinks\PrepareServiceLinks;
 use app\modules\orders\services\report\csvReport\Report;
@@ -24,7 +25,7 @@ class OrderModule extends Module
     /**
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -43,6 +44,9 @@ class OrderModule extends Module
             ],
             PrepareLinksInterface::class => [
                 'class' => PrepareServiceLinks::class
+            ],
+            OrderHandler::class => [
+                'class' => OrderHandler::class
             ],
         ]);
 
