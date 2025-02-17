@@ -2,9 +2,9 @@
 
 namespace app\modules\orders\services\report;
 
+use yii\db\ActiveQuery;
+
 interface ReportWriterInterface
 {
-    public function createReport(): string;
-
-    public function removeTemporaryFile(string $filename): void;
+    public function createReport(ActiveQuery &$query): void;
 }

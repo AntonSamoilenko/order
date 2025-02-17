@@ -2,7 +2,9 @@
 
 namespace app\modules\orders\services\report;
 
+use yii\db\ActiveQuery;
+
 interface ReportSenderInterface
 {
-    public function sendReport(string $fileName): void;
+    public function sendReport(ActiveQuery &$query): void;
 }

@@ -10,7 +10,49 @@ use yii\db\ActiveQuery;
 
 class OrderRepository
 {
-    public function setFilterByParams(ActiveQuery &$query, array $params): void
+    public function getOrdersByParams(array $params): ActiveQuery
+    {
+        $query = Order::find()
+            ->alias('o')
+            ->orderBy(['o.id' => SORT_DESC]);
+
+        $this->setFilterByParams($query, $params);
+
+        return $query;
+    }
+
+    public function getOrder(array $params): ActiveDataProvider
+    {
+         return new ActiveDataProvider([
+            'query' => $this->getOrdersByParams($params),
+            'pagination' => [
+                'pageSize' => 100,
+            ],
+        ]);
+    }
+
+    public function getService(array $params = []): array
+    {
+        $query = Order::find()
+            ->select(['service_id', 's.name as name', 'COUNT(o.id) as count'])
+            ->alias('o');
+
+        unset($params['service_ids']);
+        $this->setFilterByParams($query, $params);
+
+        $query->leftJoin(Service::tableName() . ' s', 'o.service_id = s.id')
+            ->groupBy('o.service_id')
+            ->orderBy(['count' => SORT_DESC]);
+
+        $preparedServices = [];
+        foreach ($query->asArray()->all() as $item) {
+            $preparedServices[$item['service_id']] = $item;
+        }
+
+        return $preparedServices;
+    }
+
+    private function setFilterByParams(ActiveQuery &$query, array $params): void
     {
         if (isset($params['status'])) {
             $query->andWhere(['o.status' => $params['status']]);
@@ -20,8 +62,8 @@ class OrderRepository
             $query->andWhere(['o.mode' => $params['mode']]);
         }
 
-        if (!empty($params['service_id'])) {
-            $serviceIds = array_map('intval', $params['service_id']);
+        if (!empty($params['service_ids'])) {
+            $serviceIds = array_map('intval', $params['service_ids']);
             $query->andWhere(['in', 'o.service_id', $serviceIds]);
         }
 
@@ -52,59 +94,5 @@ class OrderRepository
                     break;
             }
         }
-    }
-
-    public function getOrdersByParams(array $params): ActiveQuery
-    {
-        $query = Order::find()
-            ->alias('o')
-            ->orderBy(['o.id' => SORT_DESC]);
-
-        $this->setFilterByParams($query, $params);
-
-        return $query;
-    }
-
-    public function getData(array $params): ActiveDataProvider
-    {
-         return new ActiveDataProvider([
-            'query' => $this->getOrdersByParams($params),
-            'pagination' => [
-                'pageSize' => 100,
-            ],
-        ]);
-    }
-
-    public function getTotalCount(): int
-    {
-        return Order::find()->count();
-    }
-
-    public function getAvailableModes(): array
-    {
-        return Order::find()
-            ->select('mode')
-            ->distinct()
-            ->column();
-    }
-
-    public function getService(array $params = []): array
-    {
-        $query = Order::find()
-            ->select(['service_id', 's.name as name', 'COUNT(o.id) as count'])
-            ->alias('o');
-
-        unset($params['service_id']);
-        $this->setFilterByParams($query, $params);
-
-        $query->leftJoin(Service::tableName() . ' s', 'o.service_id = s.id')
-            ->groupBy('o.service_id')
-            ->orderBy(['count' => SORT_DESC]);
-
-        $preparedServices = [];
-        foreach ($query->asArray()->all() as $item) {
-            $preparedServices[$item['service_id']] = $item;
-        }
-        return $preparedServices;
     }
 }

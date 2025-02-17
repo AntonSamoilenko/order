@@ -3,23 +3,35 @@
 namespace app\modules\orders\services\report\csvReport;
 
 use app\modules\orders\services\report\ReportSenderInterface;
-use Yii;
-use yii\base\ExitException;
+use yii\base\InvalidConfigException;
+use yii\db\ActiveQuery;
+use yii\web\HeadersAlreadySentException;
 
 class ReportSender implements ReportSenderInterface
 {
-    /**
-     * @throws ExitException
-     */
-    public function sendReport(string $fileName): void
-    {
-        Yii::$app->response->headers->add('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-        Yii::$app->response->headers->add('Pragma', 'no-cache');
-        Yii::$app->response->headers->add('Expires', '0');
-        Yii::$app->response->sendFile($fileName, 'orders_' . date('Y-m-d_H-i-s') . '.csv', [
-            'mimeType' => 'application/octet-stream',
-        ])->send();
+    private ReportWriter $reportWriter;
 
-        Yii::$app->end();
+    public function __construct(ReportWriter $reportWriter)
+    {
+        $this->reportWriter = $reportWriter;
+    }
+
+    /**
+     * @throws HeadersAlreadySentException
+     * @throws InvalidConfigException
+     */
+    public function sendReport(ActiveQuery &$query): void
+    {
+        if (headers_sent($file, $line)) {
+            throw new HeadersAlreadySentException($file, $line);
+        }
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="export.csv"');
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        $this->reportWriter->createReport($query);
     }
 }

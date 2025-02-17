@@ -25,14 +25,14 @@ class Order extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'user_id' => Yii::t('app', 'User'),
-            'link' => Yii::t('app', 'Link'),
-            'quantity' => Yii::t('app', 'Quantity'),
-            'service_id' => Yii::t('app', 'Service'),
-            'status' => Yii::t('app', 'Status'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'mode' => Yii::t('app', 'Mode'),
+            'id'            => Yii::t('app', 'ID'),
+            'user_id'       => Yii::t('app', 'User'),
+            'link'          => Yii::t('app', 'Link'),
+            'quantity'      => Yii::t('app', 'Quantity'),
+            'service_id'    => Yii::t('app', 'Service'),
+            'status'        => Yii::t('app', 'Status'),
+            'created_at'    => Yii::t('app', 'Created At'),
+            'mode'          => Yii::t('app', 'Mode'),
         ];
     }
 

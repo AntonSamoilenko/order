@@ -10,7 +10,7 @@ class m250212_082518_order extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->createTable('{{%orders}}', [
             'id' => $this->primaryKey()->unsigned(),
@@ -44,7 +44,7 @@ class m250212_082518_order extends Migration
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
+    public function safeDown(): void
     {
         $this->dropTable('{{%users}}');
         $this->dropTable('{{%services}}');

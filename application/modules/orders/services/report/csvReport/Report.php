@@ -2,44 +2,51 @@
 
 namespace app\modules\orders\services\report\csvReport;
 
+use app\modules\orders\helpers\OrderHelper;
 use app\modules\orders\repositories\OrderRepository;
 use app\modules\orders\services\report\ReportInterface;
 use app\modules\orders\services\report\ReportSenderInterface;
-use app\modules\orders\services\report\ReportWriterInterface;
-use yii\base\ExitException;
-use yii\base\InvalidConfigException;
+use Yii;
 
 class Report implements ReportInterface
 {
     private ReportSender $reportSender;
-    private ReportWriter $reportWriter;
 
     private OrderRepository $orderRepository;
 
     public function __construct(
         ReportSenderInterface $reportSender,
-        ReportWriterInterface $reportWriter,
         OrderRepository $orderRepository
     ) {
         $this->reportSender = $reportSender;
-        $this->reportWriter = $reportWriter;
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * @throws ExitException
-     * @throws InvalidConfigException
-     */
     public function buildReport(array $params): void
     {
-        $query = $this->orderRepository->getOrdersByParams($params);
+        ob_start();
 
-        $fileName = $this->reportWriter
-            ->setQuery($query)
-            ->createReport();
+        try {
+            $params = Yii::$app->request->queryParams;
+            $params['status'] = isset($params['status'])
+                ? OrderHelper::statusReversed()[$params['status']]
+                : null;
+            set_time_limit(300);
 
-        $this->reportSender->sendReport($fileName);
+            $query = $this->orderRepository->getOrdersByParams($params);
+            $this->reportSender->sendReport($query);
 
-        $this->reportWriter->removeTemporaryFile($fileName);
+            exit;
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage(), 'export');
+        } finally {
+            Yii::info("Current output buffer level: " . ob_get_level(), 'export');
+            if (ob_get_level() > 0) {
+                Yii::info("Cleaning output buffer...", 'export');
+                ob_end_clean();
+            } else {
+                Yii::info("No output buffer to clean.", 'export');
+            }
+        }
     }
 }

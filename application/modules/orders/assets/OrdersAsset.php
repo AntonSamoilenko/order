@@ -7,10 +7,7 @@ use yii\web\View;
 
 class OrdersAsset extends AssetBundle
 {
-    public $sourcePath = '@app/modules/orders/assets';
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
-
+    public $sourcePath = '@app/modules/orders/web';
 
     public $css = [
         'css/bootstrap.min.css',
@@ -27,8 +24,4 @@ class OrdersAsset extends AssetBundle
     ];
 
     public $depends = [];
-
-    public $publishOptions = [
-        'forceCopy' => YII_ENV_DEV,
-    ];
 }
