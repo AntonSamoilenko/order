@@ -22,7 +22,7 @@ services:
     volumes:
       - ./application:/var/www/application
       - ./migrations:/var/www/migrations
-      - ./sql:/var/www/sql_dump
+      - ./sql_dump:/var/www/sql_dump
     environment:
       APP_ENV: '${ENV}'
       DB_HOST: '${DB_HOST}'
