@@ -13,7 +13,7 @@ cd /dir/to/project/
 docker compose build --no-cache
 ````
 ---
-Запуск контейнера, порт по умолчанию: 8080
+Запуск контейнера, порт по умолчанию: 8282
 ````
 docker compose up -d
 ````
