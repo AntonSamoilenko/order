@@ -8,11 +8,17 @@ use yii\db\ActiveRecord;
 
 class Order extends ActiveRecord
 {
+    /**
+     * @return string
+     */
     public static function tableName(): string
     {
         return '{{%orders}}';
     }
 
+    /**
+     * @return array
+     */
     public function rules(): array
     {
         return [
@@ -22,6 +28,9 @@ class Order extends ActiveRecord
         ];
     }
 
+    /**
+     * @return array
+     */
     public function attributeLabels(): array
     {
         return [
@@ -36,11 +45,17 @@ class Order extends ActiveRecord
         ];
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getUser(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getService(): ActiveQuery
     {
         return $this->hasOne(Service::class, ['id' => 'service_id']);

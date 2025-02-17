@@ -10,6 +10,10 @@ use yii\db\ActiveQuery;
 
 class OrderRepository
 {
+    /**
+     * @param array $params
+     * @return ActiveQuery
+     */
     public function getOrdersByParams(array $params): ActiveQuery
     {
         $query = Order::find()
@@ -21,16 +25,25 @@ class OrderRepository
         return $query;
     }
 
+    /**
+     * @param array $params
+     * @return ActiveDataProvider
+     */
     public function getOrder(array $params): ActiveDataProvider
     {
          return new ActiveDataProvider([
             'query' => $this->getOrdersByParams($params),
             'pagination' => [
                 'pageSize' => 100,
+                'pageSizeParam' => false,
             ],
         ]);
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
     public function getService(array $params = []): array
     {
         $query = Order::find()
@@ -52,6 +65,11 @@ class OrderRepository
         return $preparedServices;
     }
 
+    /**
+     * @param ActiveQuery $query
+     * @param array $params
+     * @return void
+     */
     private function setFilterByParams(ActiveQuery &$query, array $params): void
     {
         if (isset($params['status'])) {

@@ -7,11 +7,17 @@ use yii\db\ActiveRecord;
 
 class Service extends ActiveRecord
 {
+    /**
+     * @return string
+     */
     public static function tableName(): string
     {
         return '{{%services}}';
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getOrders(): ActiveQuery
     {
         return $this->hasMany(Order::class, ['service_id' => 'id']);

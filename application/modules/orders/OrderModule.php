@@ -16,8 +16,14 @@ use Yii;
 
 class OrderModule extends Module
 {
+    /**
+     * @var string
+     */
     public $controllerNamespace = 'app\modules\orders\controllers';
 
+    /**
+     * @return void
+     */
     public function init()
     {
         parent::init();

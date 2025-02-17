@@ -8,7 +8,7 @@ use yii\db\Migration;
 class m250212_084612_order_dump extends Migration
 {
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function safeUp(): bool
     {
@@ -29,7 +29,7 @@ class m250212_084612_order_dump extends Migration
     }
 
     /**
-     * {@inheritdoc}
+     * @return void
      */
     public function safeDown(): void
     {

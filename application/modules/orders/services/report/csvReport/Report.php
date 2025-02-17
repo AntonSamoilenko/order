@@ -10,10 +10,20 @@ use Yii;
 
 class Report implements ReportInterface
 {
+    /**
+     * @var ReportSender|ReportSenderInterface
+     */
     private ReportSender $reportSender;
 
+    /**
+     * @var OrderRepository
+     */
     private OrderRepository $orderRepository;
 
+    /**
+     * @param ReportSenderInterface $reportSender
+     * @param OrderRepository $orderRepository
+     */
     public function __construct(
         ReportSenderInterface $reportSender,
         OrderRepository $orderRepository
@@ -22,6 +32,10 @@ class Report implements ReportInterface
         $this->orderRepository = $orderRepository;
     }
 
+    /**
+     * @param array $params
+     * @return void
+     */
     public function buildReport(array $params): void
     {
         ob_start();

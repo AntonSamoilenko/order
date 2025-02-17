@@ -4,6 +4,7 @@ use yii\symfonymailer\Mailer;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$routeRules = require __DIR__ . '/routeRules.php';
 
 $config = [
     'id' => 'basic',
@@ -46,12 +47,7 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-                'orders/export_csv' => 'orders/order/export-csv', // Правило для exportCsv
-                'orders/<status:\w+>' => 'orders/order/index',
-                'orders/' => 'orders/order/index',
-                'orders' => 'orders/order/index',
-            ],
+            'rules' => $routeRules,
         ],
     ],
     'modules' => [

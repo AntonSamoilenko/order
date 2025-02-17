@@ -11,12 +11,14 @@ use yii\db\ActiveQuery;
 class ReportWriter implements ReportWriterInterface
 {
     /**
+     * @param ActiveQuery $query
+     * @return void
      * @throws InvalidConfigException
      */
     public function createReport(ActiveQuery &$query): void
     {
         $output = fopen('php://output', 'w');
-        fputcsv($output, OrderHelper::statusLabels());
+        fputcsv($output, OrderHelper::getCSVFields(), ';');
 
         foreach ($query->batch(100) as $data) {
             foreach ($data as $order) {
@@ -31,7 +33,7 @@ class ReportWriter implements ReportWriterInterface
                     $order->mode === 0
                         ? Yii::t('app', 'Manual')
                         : Yii::t('app', 'Auto'),
-                ]);
+                ], ';');
             }
 
             flush();

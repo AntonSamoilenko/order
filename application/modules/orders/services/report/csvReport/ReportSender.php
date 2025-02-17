@@ -9,14 +9,22 @@ use yii\web\HeadersAlreadySentException;
 
 class ReportSender implements ReportSenderInterface
 {
+    /**
+     * @var ReportWriter
+     */
     private ReportWriter $reportWriter;
 
+    /**
+     * @param ReportWriter $reportWriter
+     */
     public function __construct(ReportWriter $reportWriter)
     {
         $this->reportWriter = $reportWriter;
     }
 
     /**
+     * @param ActiveQuery $query
+     * @return void
      * @throws HeadersAlreadySentException
      * @throws InvalidConfigException
      */

@@ -11,6 +11,12 @@ use yii\web\Controller;
 
 class OrderController extends Controller
 {
+    /**
+     * @param OrderRepository $orderRepository
+     * @param PrepareLinksInterface $prepareServiceLinks
+     * @param string|null $status
+     * @return string
+     */
     public function actionIndex(
         OrderRepository $orderRepository,
         PrepareLinksInterface $prepareServiceLinks,
@@ -20,19 +26,23 @@ class OrderController extends Controller
         $params['status'] = OrderHelper::statusReversed()[$status] ?? null;
 
         return $this->render('index', [
-            'dataProvider'  => $orderRepository->getOrder($params),
-            'status'        => $status,
-            'searchFields'  => OrderHelper::searchFields(),
-            'statusLabels'  => OrderHelper::statusLabels(),
-            'statuses'      => OrderHelper::statuses(),
-            'modes'         => OrderHelper::modes(),
-            'services'      => $prepareServiceLinks->prepareLinks(
+            'dataProvider' => $orderRepository->getOrder($params),
+            'status' => $status,
+            'searchFields' => OrderHelper::searchFields(),
+            'statusLabels' => OrderHelper::statusLabels(),
+            'statuses' => OrderHelper::statuses(),
+            'modes' => OrderHelper::modes(),
+            'services' => $prepareServiceLinks->prepareLinks(
                 $orderRepository->getService($params),
                 Yii::$app->request->queryParams
             ),
         ]);
     }
 
+    /**
+     * @param ReportInterface $report
+     * @return void
+     */
     public function actionExportCsv(ReportInterface $report): void
     {
         $params = Yii::$app->request->queryParams;
