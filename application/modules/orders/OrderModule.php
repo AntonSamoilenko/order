@@ -18,7 +18,7 @@ class OrderModule extends Module
 {
     public $controllerNamespace = 'app\modules\orders\controllers';
 
-    public function init(): void
+    public function init()
     {
         parent::init();
 
