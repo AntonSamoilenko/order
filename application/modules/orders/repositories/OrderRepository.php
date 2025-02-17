@@ -2,9 +2,9 @@
 
 namespace app\modules\orders\repositories;
 
-use app\modules\orders\models\Order;
-use app\modules\orders\models\Service;
-use app\modules\orders\models\User;
+use app\modules\orders\models\Orders;
+use app\modules\orders\models\Services;
+use app\modules\orders\models\Users;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 
@@ -16,7 +16,7 @@ class OrderRepository
      */
     public function getOrdersByParams(array $params): ActiveQuery
     {
-        $query = Order::find()
+        $query = Orders::find()
             ->alias('o')
             ->orderBy(['o.id' => SORT_DESC]);
 
@@ -46,14 +46,14 @@ class OrderRepository
      */
     public function getService(array $params = []): array
     {
-        $query = Order::find()
+        $query = Orders::find()
             ->select(['service_id', 's.name as name', 'COUNT(o.id) as count'])
             ->alias('o');
 
         unset($params['service_ids']);
         $this->setFilterByParams($query, $params);
 
-        $query->leftJoin(Service::tableName() . ' s', 'o.service_id = s.id')
+        $query->leftJoin(Services::tableName() . ' s', 'o.service_id = s.id')
             ->groupBy('o.service_id')
             ->orderBy(['count' => SORT_DESC]);
 
@@ -96,7 +96,7 @@ class OrderRepository
                     break;
                 case 2:
                     $userName = explode(' ', $params['search']);
-                    $query->leftJoin(User::tableName() . ' u', 'o.user_id = u.id')
+                    $query->leftJoin(Users::tableName() . ' u', 'o.user_id = u.id')
                         ->andWhere([
                             'or',
                             ['like', 'u.first_name', $userName[0]],

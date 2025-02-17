@@ -19,14 +19,15 @@ class OrderHandler
     public function handleActiveDataProvider(ActiveDataProvider &$dataProvider, array $services): void
     {
         $data = [];
+        /** @var \app\modules\orders\models\Orders $model */
         foreach ($dataProvider->getModels() as $model) {
             $data[] = new Orders(
                 $model->id,
-                $model->user->first_name . ' ' . $model->user->last_name,
+                $model->getUser()->first_name . ' ' . $model->getUser()->last_name,
                 $model->link,
                 $model->quantity,
                 $services[$model->service_id]['count'],
-                $model->service->name,
+                $model->getService()->name,
                 OrderHelper::statuses()[$model->status] ?? 'Unknown',
                 $model->mode ? OrderHelper::MODE_AUTO : OrderHelper::MODE_MANUAL,
                 Yii::$app->formatter->asDate($model->created_at, 'php:Y-m-d H:i:s')

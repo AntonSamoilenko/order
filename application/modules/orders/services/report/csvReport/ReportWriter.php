@@ -3,6 +3,7 @@
 namespace app\modules\orders\services\report\csvReport;
 
 use app\modules\orders\helpers\OrderHelper;
+use app\modules\orders\models\Orders;
 use app\modules\orders\services\report\ReportWriterInterface;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -21,13 +22,14 @@ class ReportWriter implements ReportWriterInterface
         fputcsv($output, OrderHelper::getCSVFields(), ';');
 
         foreach ($query->batch(100) as $data) {
+            /** @var Orders $order */
             foreach ($data as $order) {
                 fputcsv($output, [
                     $order->id,
-                    $order->user ? $order->user->getFullName() : '',
+                    $order->getUser() ? $order->getUser()->first_name . ' ' . $order->getUser()->last_name : '',
                     $order->link,
                     $order->quantity,
-                    $order->service ? $order->service->name : '',
+                    $order->getService() ? $order->getService()->name : '',
                     OrderHelper::statusLabels()[$order->status] ?? '',
                     Yii::$app->formatter->asDatetime($order->created_at),
                     $order->mode === 0
