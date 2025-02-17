@@ -14,15 +14,17 @@ use yii\widgets\LinkPager;
 /* @var $statusLabels app\modules\orders\helpers\OrderHelper::statusLabels() */
 /* @var $modes app\modules\orders\helpers\OrderHelper::modes() */
 /* @var $currentParams array */
+/* @var $currentStatus null|string */
 ?>
 
 <?php echo $this->render('_navigation'); ?>
 
 <div class="container-fluid">
     <?php echo $this->render('_filter_panel', [
-            'searchFields'  => $searchFields,
-            'statusLabels'  => $statusLabels,
-            'statuses'      => $statuses,
+            'searchFields' => $searchFields,
+            'statusLabels' => $statusLabels,
+            'statuses' => $statuses,
+            'currentStatus' => $currentStatus,
         ]);
     ?>
 

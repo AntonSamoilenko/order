@@ -6,13 +6,14 @@ use yii\helpers\Url;
 /* @var $searchFields app\modules\orders\helpers\OrderHelper::searchFields() */
 /* @var $statuses app\modules\orders\helpers\OrderHelper::statuses() */
 /* @var $statusLabels app\modules\orders\helpers\OrderHelper::statusLabels() */
+/* @var $currentStatus null|string */
 ?>
 
 <ul class="nav nav-tabs p-b">
-    <li class="active"><a href="/orders">All orders</a></li>
+    <li class=<?= empty($currentStatus) ? 'active' : '' ?>><a href="/orders">All orders</a></li>
     <?php foreach ($statuses as $key => $status): ?>
         <?php $url = Url::to(['', 'status' => $status]);?>
-        <li><?= Html::a($statusLabels[$key], $url, ['class' => 'filter-item']) ?></li>
+        <li class=<?= $currentStatus == $status ? 'active' : '' ?>><?= Html::a($statusLabels[$key], $url, ['class' => 'filter-item']) ?></li>
     <?php endforeach; ?>
     <li class="pull-right custom-search">
         <form class="form-inline" action="" method="get">

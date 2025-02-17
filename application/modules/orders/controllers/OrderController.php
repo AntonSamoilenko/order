@@ -40,7 +40,7 @@ class OrderController extends Controller
 
         return $this->render('index', [
             'dataProvider' => $dataProvider,
-            'status' => $status,
+            'currentStatus' => $status,
             'searchFields' => OrderHelper::searchFields(),
             'statusLabels' => OrderHelper::statusLabels(),
             'statuses' => OrderHelper::statuses(),
